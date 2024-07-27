@@ -15,7 +15,11 @@
    ```
    npm install
    ```
-4. Open this file to run your bot:
+4. Change your osu! credential at
+   ```
+   .\config\account.json
+   ```
+5. Open this file to run your bot:
    ```
    start.bat
    ```
