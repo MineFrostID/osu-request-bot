@@ -14,3 +14,8 @@ You need to install [Streamer.bot](https://streamer.bot/) to read your Youtube L
    ```
    start.bat
    ```
+
+
+## Dependencies
+* [osu-api-extended](https://github.com/cyperdark/osu-api-extended): by [cyperdark](https://github.com/cyperdark)
+* [bancho.js](https://github.com/ThePooN/bancho.js): by [ThePooN](https://github.com/ThePooN)
