@@ -1,7 +1,7 @@
 # Youtube-np-Bot
 
 ## Preparation
-1. You need to install [Streamer.bot](https://streamer.bot/) to read your Youtube Livechat
+1. You need to install [Streamer.bot](https://streamer.bot/) first to read your Youtube Livechat
 2. Login into your Youtube Account
 3. Inport this text:
    ```
