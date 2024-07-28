@@ -56,6 +56,8 @@ Here's a list of all software that needs to be installed before you download the
 3. Make a new stream schedule and GO LIVE
    > Note: this bot will not working if you don't have any live stream 
 
+## Tutorial Video
+STILL WIP (Don't have time to make it right now)
 
 ## Dependencies
 * [osu-api-extended](https://github.com/cyperdark/osu-api-extended): by [cyperdark](https://github.com/cyperdark)
