@@ -1,4 +1,5 @@
 # Youtube-np-Bot
+(IF YOU ARE PLAYING ON LAZER, I'M SORRY. THIS BOT IS NOT WORKING ON LAZER FOR NOW)
 
 ## Preparation
 Here's a list of all software that needs to be installed before you download the bot.
