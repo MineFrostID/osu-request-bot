@@ -6,7 +6,7 @@ Here's a list of all software that needs to be installed before you download the
    * [Streamer.bot](https://streamer.bot/)
    * [node.js](https://nodejs.org/en/download/prebuilt-installer)
    
-2. Installation (Skip this part if you know how to install it)
+2. Installation
    1. Streamer.bot
       1. Donwload Streamer.bot [here](https://streamer.bot/)
       2. Open the software, go to:
@@ -23,7 +23,7 @@ Here's a list of all software that needs to be installed before you download the
 
          Right click "osu!Request" and Enabled
       5. You're good to go to the next step
-   2. nodejs
+   2. nodejs (Skip this part if you know how to install it)
       1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer)
       2. Install it
       3. Check on terminal using this command:
