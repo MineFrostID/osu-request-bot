@@ -3,8 +3,8 @@
 ## Preparation
 Here's a list of all software that needs to be installed before you download the bot.
 1. Software to install:
-   1. [Streamer.bot](https://streamer.bot/)
-   2. [node.js](https://nodejs.org/en/download/prebuilt-installer)
+   * [Streamer.bot](https://streamer.bot/)
+   * [node.js](https://nodejs.org/en/download/prebuilt-installer)
    
 2. Installation (Skip this part if you know how to install it)
    1. Streamer.bot
