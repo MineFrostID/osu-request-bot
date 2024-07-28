@@ -50,7 +50,7 @@ Here's a list of all software that needs to be installed before you download the
    npm install
    ```
 ## How to use
-1. Open Streamer.bot sofware
+1. Open Streamer.bot
 2. Open your bot folder and run this file:
    ```Start.bat```
 3. Make a new stream schedule and GO LIVE
