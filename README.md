@@ -1,6 +1,9 @@
 # Youtube-np-Bot
 (IF YOU ARE PLAYING ON LAZER, I'M SORRY. THIS BOT IS NOT WORKING ON LAZER FOR NOW)
 
+
+Feel free to dm me on discord : **MineFrostID#9156**
+
 ## Preparation
 Here's a list of all software that needs to be installed before you download the bot.
 1. Software to install:
