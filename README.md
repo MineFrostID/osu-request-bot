@@ -42,7 +42,7 @@ Here's a list of all software that needs to be installed before you download the
 2. Extract your .zip file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
 4. Change your osu! credential at
    ```
-   .\config\**account.json**
+   .\config\account.json
    ```
    > username = Your osu! username
    
