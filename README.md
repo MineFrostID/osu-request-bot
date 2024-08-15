@@ -2,7 +2,7 @@
 (IF YOU ARE PLAYING ON LAZER, I'M SORRY. THIS BOT IS NOT WORKING ON LAZER FOR NOW)
 
 
-Feel free to dm me on discord : **MineFrostID#9156**
+Join my Discord server if you want to ask about something : **[Join Here](https://discord.gg/RT5eC26qYa)**
 
 ## Preparation
 Here's a list of all software that needs to be installed before you download the bot.
