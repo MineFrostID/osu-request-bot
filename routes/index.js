@@ -51,6 +51,11 @@ const loginBanchoJs = async (username) => {
       "Get your token at https://osu.ppy.sh/home/account/edit#legacy-api"
     );
     console.log("=====================================");
+    console.log("Stopping the server...");
+
+    setTimeout(() => {
+      process.exit();
+    }, 5000);
   }
 };
 
@@ -159,7 +164,7 @@ router.get("/callback", async (req, res) => {
     return;
   }
   await login(req);
-  res.send("Logged in!");
+  res.send("Logged in! You can close this tab now!");
 });
 
 // Get request anonymously
