@@ -42,12 +42,8 @@ Here's a list of all software that needs to be installed before you download the
 2. Extract your .zip file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
 4. Change your osu! credential at
    ```
-   .\config\account.json
+   .\users\account.json
    ```
-   > username = Your osu! username
-   
-   > password = Your osu! password
-   
    > token = Your [Legacy API server passowrd](https://osu.ppy.sh/home/account/edit#legacy-api)
 3. Open terminal inside the folder and run this command:
    ```
