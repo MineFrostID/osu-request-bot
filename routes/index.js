@@ -15,6 +15,13 @@ let client, users, userInfo;
 
 let loginStatus = false;
 
+const errorHandlingQuit = () => {
+  console.log("Stopping the server in 5 second...");
+  setTimeout(() => {
+    process.exit();
+  }, 5000);
+};
+
 // Welcome Message
 const welcomeMessage = () => {
   console.log("=====================================");
@@ -51,11 +58,7 @@ const loginBanchoJs = async (username) => {
       "Get your token at https://osu.ppy.sh/home/account/edit#legacy-api"
     );
     console.log("=====================================");
-    console.log("Stopping the server...");
-
-    setTimeout(() => {
-      process.exit();
-    }, 5000);
+    errorHandlingQuit();
   }
 };
 
@@ -68,15 +71,29 @@ const login = async (data) => {
   if (loginStatus) return;
   const token = data.query.code;
 
-  userInfo = await auth.authorize(
-    token,
-    "osu",
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
-  );
+  try {
+    userInfo = await auth.authorize(
+      token,
+      "osu",
+      CLIENT_ID,
+      CLIENT_SECRET,
+      REDIRECT_URI
+    );
+  } catch (e) {
+    console.log("=====================================");
+    console.log("Failed to get user info");
+    console.log("=====================================");
+    errorHandlingQuit();
+  }
 
-  await auth.login(CLIENT_ID, CLIENT_SECRET, SCOPE_LIST);
+  try {
+    await auth.login(CLIENT_ID, CLIENT_SECRET, SCOPE_LIST);
+  } catch (e) {
+    console.log("=====================================");
+    console.log("Failed to login");
+    console.log("=====================================");
+    errorHandlingQuit();
+  }
 
   loginBanchoJs(userInfo.username);
 
@@ -90,15 +107,73 @@ const login = async (data) => {
 };
 
 // Main function
-const main = async (req, req2) => {
-  if (!loginStatus) return false;
+let main = async (req, req2) => {
+  const mods = [
+    "EZ",
+    "HD",
+    "HR",
+    "DT",
+    "NC",
+    "FL",
+    "EZDT",
+    "DTEZ",
+    "EZHD",
+    "HDEZ",
+    "EZNC",
+    "NCEZ",
+    "EZFL",
+    "FLEZ",
+    "HDHR",
+    "HRHD",
+    "HDDT",
+    "DTHD",
+    "HDNC",
+    "NCHD",
+    "HDFL",
+    "FLHD",
+    "HRDT",
+    "DTHR",
+    "HRNC",
+    "NCHR",
+    "HRFL",
+    "FLHR",
+    "DTFL",
+    "FLDT",
+    "NCFL",
+    "FLNC",
+  ];
+
   // Get id and username from request
-  const beatmapId = req;
+  const reqArr = req.split(" ");
   const username = req2;
+  let reqMods = null;
+  let useMods = false;
+
+  const beatmapId = reqArr[0];
+
+  if (reqArr.length > 1) {
+    for (let i = 0; i < reqArr.length || !useMods; i++) {
+      if (mods.includes(reqArr[i].toUpperCase())) {
+        reqMods = reqArr[i].toUpperCase();
+        useMods = true;
+      }
+    }
+  }
+
+  if (!useMods) {
+    reqMods = "NM";
+  }
 
   // Get beatmap details
-  const data = await v2.beatmap.id.details(beatmapId);
-
+  try {
+    const data = await v2.beatmap.id.details(beatmapId);
+  } catch (e) {
+    console.log("=====================================");
+    console.log("REQUEST BY USER: " + username);
+    console.log("Failed to get beatmap details");
+    console.log("=====================================");
+    return false;
+  }
   // Check if beatmap not found
   if (data.error) {
     console.log();
@@ -115,13 +190,14 @@ const main = async (req, req2) => {
   const title = data.beatmapset.title;
   const respond = `${mapUrl} ${artist} - ${title}`;
   const message = `[${respond}]`;
+  const respondMessage = `Request send: [${reqMods}] ${artist} - ${title} [${mapUrl}]`;
 
   // Send message to osu!
   try {
     let banchoMessage = new banchojs.OutgoingBanchoMessage(
       client,
       users,
-      `${username} => ${message}`
+      `${username} => [${reqMods}] ${message}`
     );
     banchoMessage.send();
     console.log();
@@ -130,7 +206,7 @@ const main = async (req, req2) => {
     console.log("Chat Sent to osu!: ");
     console.log(respond);
     console.log("=====================================");
-    return true;
+    return respondMessage;
   } catch (e) {
     console.log("=====================================");
     console.log("Failed to send message");
@@ -168,28 +244,26 @@ router.get("/callback", async (req, res) => {
 });
 
 // Get request anonymously
-router.get("/request/:id", (req, res) => {
+router.get("/request/:map", async (req, res) => {
   if (!loginStatus) {
     res.send("Please login first!");
     return;
   }
-  main(req.params.id, "Anonymous");
-  res.send("Request Sent!");
+  let messageSend = await main(req.params.map, "Anonymous");
+  if (messageSend !== false) res.send(messageSend);
+  else res.send("Beatmap not found, try another one!");
 });
 
 // Get request with username
-router.get("/request/:id/:name", async (req, res) => {
+router.get("/request/:map/:name", async (req, res) => {
   if (!loginStatus) {
     res.send("Please login first!");
     return;
   }
-  const status = await main(req.params.id, req.params.name);
+  let messageSend = await main(req.params.map, req.params.name);
 
-  if (status) {
-    res.send("Request Sent!");
-  } else {
-    res.send("Beatmap not found, try another one!");
-  }
+  if (messageSend !== false) res.send(messageSend);
+  else res.send("Beatmap not found, try another one!");
 });
 
 module.exports = router;
