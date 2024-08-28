@@ -148,6 +148,7 @@ let main = async (req, req2) => {
   const username = req2;
   let reqMods = null;
   let useMods = false;
+  let data;
 
   const beatmapId = reqArr[0];
 
@@ -166,7 +167,7 @@ let main = async (req, req2) => {
 
   // Get beatmap details
   try {
-    const data = await v2.beatmap.id.details(beatmapId);
+    data = await v2.beatmap.id.details(beatmapId);
   } catch (e) {
     console.log("=====================================");
     console.log("REQUEST BY USER: " + username);
