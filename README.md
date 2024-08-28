@@ -15,6 +15,7 @@ Here's a list of all software that needs to be installed before you download the
       1. Donwload Streamer.bot [here](https://streamer.bot/)
       2. Open the software, go to:
          > Platform>Youtube>**Account**  FOR YOUTUBE
+      
          > Platform>Twitch>**Account**  FOR TWITCH
          
          And login your own Account on **Broadcaster Accout** (Or if you have your own bot account, login on the **Bot Account**)
