@@ -93,20 +93,77 @@ const login = async (data) => {
 const main = async (req, req2) => {
   if (!loginStatus) return false;
   // Get id and username from request
-  const beatmapId = req;
+
+  // Variable for mods
+  const mods = [
+    "EZ",
+    "HD",
+    "HR",
+    "DT",
+    "NC",
+    "FL",
+    "EZDT",
+    "DTEZ",
+    "EZHD",
+    "HDEZ",
+    "EZNC",
+    "NCEZ",
+    "EZFL",
+    "FLEZ",
+    "HDHR",
+    "HRHD",
+    "HDDT",
+    "DTHD",
+    "HDNC",
+    "NCHD",
+    "HDFL",
+    "FLHD",
+    "HRDT",
+    "DTHR",
+    "HRNC",
+    "NCHR",
+    "HRFL",
+    "FLHR",
+    "DTFL",
+    "FLDT",
+    "NCFL",
+    "FLNC",
+  ];
+
+  // Get id and username from request
+  const reqArr = req.split(" ");
   const username = req2;
+  let reqMods = null;
+  let useMods = false;
+  let data;
+  const beatmapId = reqArr[0];
 
   // Get beatmap details
-  const data = await v2.beatmap.id.details(beatmapId);
-
-  // Check if beatmap not found
-  if (data.error) {
+  try {
+    data = await v2.beatmap.id.details(beatmapId);
+  } catch (e) {
     console.log();
     console.log("=====================================");
     console.log("REQUEST BY USER: " + username);
-    console.log("ERROR: " + data.error);
+    console.log("ERROR: " + e);
     console.log("=====================================");
     return false;
+  }
+
+  if (reqArr.length > 1) {
+    for (let i = 1; i < reqArr.length && !useMods; i++) {
+      if (reqArr !== undefined) {
+        reqArr[i] = reqArr[i].toUpperCase();
+        if (mods.includes(reqArr[i])) {
+          reqMods = reqArr[i];
+          useMods = true;
+        }
+      }
+    }
+  }
+
+  if (!useMods) {
+    reqMods = "NM";
   }
 
   // Get beatmap details into variables
@@ -115,13 +172,14 @@ const main = async (req, req2) => {
   const title = data.beatmapset.title;
   const respond = `${mapUrl} ${artist} - ${title}`;
   const message = `[${respond}]`;
+  const respondMessage = `Request send: [${reqMods}] ${artist} - ${title} (${mapUrl})`;
 
   // Send message to osu!
   try {
     let banchoMessage = new banchojs.OutgoingBanchoMessage(
       client,
       users,
-      `${username} => ${message}`
+      `${username} => [${reqMods}] ${message}`
     );
     banchoMessage.send();
     console.log();
@@ -130,10 +188,11 @@ const main = async (req, req2) => {
     console.log("Chat Sent to osu!: ");
     console.log(respond);
     console.log("=====================================");
-    return true;
+    return respondMessage;
   } catch (e) {
     console.log("=====================================");
     console.log("Failed to send message");
+    console.log("ERROR: " + e);
     console.log("=====================================");
     return false;
   }
@@ -168,13 +227,14 @@ router.get("/callback", async (req, res) => {
 });
 
 // Get request anonymously
-router.get("/request/:id", (req, res) => {
+router.get("/request/:id", async (req, res) => {
   if (!loginStatus) {
     res.send("Please login first!");
     return;
   }
-  main(req.params.id, "Anonymous");
-  res.send("Request Sent!");
+  const messageSend = await main(req.params.id, "Anonymous");
+  if (!messageSend) res.send("Beatmap not found, try another one!");
+  else res.send(messageSend);
 });
 
 // Get request with username
@@ -183,13 +243,9 @@ router.get("/request/:id/:name", async (req, res) => {
     res.send("Please login first!");
     return;
   }
-  const status = await main(req.params.id, req.params.name);
-
-  if (status) {
-    res.send("Request Sent!");
-  } else {
-    res.send("Beatmap not found, try another one!");
-  }
+  const messageSend = await main(req.params.id, req.params.name);
+  if (!messageSend) res.send("Beatmap not found, try another one!");
+  else res.send(messageSend);
 });
 
 module.exports = router;
