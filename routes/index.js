@@ -1,69 +1,97 @@
 var express = require("express");
+var readline = require("readline");
 var router = express.Router();
 const { v2, auth } = require("osu-api-extended");
 const banchojs = require("bancho.js");
-const account = require("../users/account.json");
 const config = require("../config/config.json");
 
-const CODE = account.token;
 const CLIENT_ID = config.CLIENT_ID;
 const CLIENT_SECRET = config.CLIENT_PASSWORD;
 const REDIRECT_URI = config.REDIRECT_URL;
 const SCOPE_LIST = config.SCOPE_LIST;
 
 let client, users, userInfo;
-
 let loginStatus = false;
+let TOKEN_V1 = null;
 
 // Welcome Message
 const welcomeMessage = () => {
   console.log("=====================================");
   console.log("WELCOME TO OSU! REQUEST YOUTUBE BOT!");
   console.log("=====================================");
-  console.log("Please login to your osu! account");
   console.log("=====================================");
+  console.log("Please login to your osu! account");
   console.log("Open this link to login:");
   console.log("http://localhost:3000/login");
   console.log("=====================================");
 };
 welcomeMessage();
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+// Get API V1 Token with keyboard input
+function getAPICode() {
+  console.log("=====================================");
+  console.log(
+    "Get your token at https://osu.ppy.sh/home/account/edit#legacy-api"
+  );
+  return new Promise((resolve) =>
+    rl.question("Enter your osu! API V1 token: ", (answer) => resolve(answer))
+  );
+}
 
 // Banchojs Login
 const loginBanchoJs = async (username) => {
   if (loginStatus) return;
-  try {
-    client = new banchojs.BanchoClient({
-      username: username,
-      password: CODE,
-    });
+  var loginSuccess = false;
 
-    users = client.getSelf();
-    await client.connect();
+  for (let i = 0; i < 3 && !loginSuccess; i++) {
+    TOKEN_V1 = await getAPICode();
+    console.log("=====================================");
+    try {
+      client = new banchojs.BanchoClient({
+        username: username,
+        password: TOKEN_V1,
+      });
 
-    console.log("=====================================");
-    console.log("BANCHOJS CONNECTED!");
-    console.log("=====================================");
-  } catch (e) {
+      users = client.getSelf();
+      await client.connect();
+
+      console.log("=====================================");
+      console.log("BANCHOJS CONNECTED!");
+      console.log("=====================================");
+      rl.close();
+      loginSuccess = true;
+    } catch (e) {
+      console.log("=====================================");
+      console.log("Failed to connect BanchoJS");
+      console.log("Please check your credential in users/account.json");
+      console.log("=====================================");
+    }
+  }
+
+  if (!loginSuccess) {
     console.log("=====================================");
     console.log("Failed to connect BanchoJS");
     console.log("Please check your credential in users/account.json");
-    console.log(
-      "Get your token at https://osu.ppy.sh/home/account/edit#legacy-api"
-    );
     console.log("=====================================");
+    console.log("You have reached maximum login attempt");
     console.log("Stopping the server...");
-
     setTimeout(() => {
       process.exit();
     }, 5000);
   }
 };
 
+// Get URL for login
 const url = async () => {
   const url = auth.build_url(CLIENT_ID, REDIRECT_URI, SCOPE_LIST);
   return url;
 };
 
+// Login to osu-api-extended and BanchoJS
 const login = async (data) => {
   if (loginStatus) return;
   const token = data.query.code;
@@ -76,15 +104,16 @@ const login = async (data) => {
     REDIRECT_URI
   );
 
+  // Login to osu-api-extended
   await auth.login(CLIENT_ID, CLIENT_SECRET, SCOPE_LIST);
 
-  loginBanchoJs(userInfo.username);
+  // Login to BanchoJS
+  await loginBanchoJs(userInfo.username);
 
   console.log("=====================================");
   console.log("Logged in as " + userInfo.username);
   console.log("SUCCESS!");
   console.log("=====================================");
-  console.log();
 
   loginStatus = true;
 };
@@ -142,7 +171,13 @@ const main = async (req, req2) => {
   try {
     data = await v2.beatmap.id.details(beatmapId);
   } catch (e) {
-    console.log();
+    console.log("=====================================");
+    console.log("ERROR: " + e);
+    console.log("=====================================");
+    return false;
+  }
+
+  if (data.error) {
     console.log("=====================================");
     console.log("REQUEST BY USER: " + username);
     console.log("ERROR: " + e);
@@ -182,11 +217,10 @@ const main = async (req, req2) => {
       `${username} => [${reqMods}] ${message}`
     );
     banchoMessage.send();
-    console.log();
     console.log("=====================================");
     console.log("REQUEST BY USER: " + username);
     console.log("Chat Sent to osu!: ");
-    console.log(respond);
+    console.log(`[${reqMods}] ${respond}`);
     console.log("=====================================");
     return respondMessage;
   } catch (e) {
@@ -222,8 +256,10 @@ router.get("/callback", async (req, res) => {
     res.send("You are already logged in!");
     return;
   }
+  res.send(
+    "Logged in! You can close this tab now, continue to input your API V1 Token!"
+  );
   await login(req);
-  res.send("Logged in! You can close this tab now!");
 });
 
 // Get request anonymously
