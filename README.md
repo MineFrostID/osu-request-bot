@@ -1,4 +1,4 @@
-# Youtube-np-Bot
+# osu-Request-Bot
 (IF YOU ARE PLAYING ON LAZER, I'M SORRY. THIS BOT IS NOT WORKING ON LAZER FOR NOW)
 
 
