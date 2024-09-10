@@ -51,10 +51,12 @@ Here's a list of all software that needs to be installed before you download the
    ```
 ## How to use
 1. Open Streamer.bot
-2. Make sure your Youtube account is already connected
+2. Make sure your Youtube / Twitch account is already connected
 3. Open your bot folder and run this file:
    ```Start.bat```
-4. Make a new stream schedule and GO LIVE
+4. (For Youtube Only)
+   
+   Make a new stream schedule and GO LIVE
    > Note: this bot will not working if you don't have any live stream 
 
 ## Tutorial Video
