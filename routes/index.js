@@ -22,7 +22,7 @@ const welcomeMessage = () => {
   console.log("=====================================");
   console.log("Please login to your osu! account");
   console.log("Open this link to login:");
-  console.log("http://localhost:3000/login");
+  console.log("http://localhost:1054/login");
   console.log("=====================================");
 };
 welcomeMessage();
@@ -238,7 +238,7 @@ router.get("/", function (req, res) {
     res.send("Welcome to osu! Request Youtube Bot!");
   } else if (!loginStatus) {
     res.send(
-      "Welcome to osu! Request Youtube Bot! Please open this link to login: http://localhost:3000/login"
+      "Welcome to osu! Request Youtube Bot! Please open this link to login: http://localhost:1054/login"
     );
   }
 });
