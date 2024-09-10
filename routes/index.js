@@ -180,7 +180,7 @@ const main = async (req, req2) => {
   if (data.error) {
     console.log("=====================================");
     console.log("REQUEST BY USER: " + username);
-    console.log("ERROR: " + e);
+    console.log("ERROR: " + data.error);
     console.log("=====================================");
     return false;
   }
