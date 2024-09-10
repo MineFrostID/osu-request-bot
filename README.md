@@ -6,11 +6,12 @@ Join my Discord server if you want to ask about something : **[Join Here](https:
 
 ## Preparation
 Here's a list of all software that needs to be installed before you download the bot.
-1. Software to install:
+
+A. Software to install:
    * [Streamer.bot](https://streamer.bot/)
    * [node.js](https://nodejs.org/en/download/prebuilt-installer)
    
-2. Installation
+B. Installation
    1. Streamer.bot
       1. Download Streamer.bot [here](https://streamer.bot/)
       2. Open the software, go to:
@@ -26,13 +27,13 @@ Here's a list of all software that needs to be installed before you download the
          ```
          And click **Import**
       4. Check on this section:
-         > Commands
+         > Actions
 
-         Right click **osu!Request** and Enabled
+         Right click **[Main] # Switch** and Enabled
       5. You're good to go to the next step
    2. nodejs (Skip this part if you know how to install it)
       1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer)
-      2. Install it
+      2. Install it (I recommended you to install LTS version)
       3. Check on terminal using this command:
          ```
          npm -v
@@ -42,25 +43,34 @@ Here's a list of all software that needs to be installed before you download the
 
 ## Installation
 ### Simple
-1. Download .exe from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
+1. Download .exe file from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
 2. Open it
 ### Advance (If you want to edit the code)
-1. Download source code from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
-2. Extract your .zip file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
+1. Download .zip file from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
+2. Extract the file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
 3. Open terminal inside the folder and run this command:
    ```
    npm install
    ```
-## How to use
-1. Open Streamer.bot
-2. Make sure your Youtube / Twitch (or both) account is already connected
-3. Open your bot folder and run this file:
-   ```Start.bat```
-4. (For Youtube Only)
-   
-   Make a new stream schedule and GO LIVE
-   > Note: this bot will not working if you don't have any live stream 
+4. You can start to customize the bot by yourself
+### NOTE FOR YOUTUBE STREAMER
+Make a new stream schedule and GO LIVE (This bot will not working if you don't have any live stream)
+## How to use (For Viewer)
+Use this format to request :
+> !r [beatmapID] [message / mods]
 
+You can use one of these commands :
+- !r
+- !req
+- !request
+- r!
+- req!
+- request!
+
+For Example
+- > !r 4469665
+- > !r 4469665 hddt
+- > !r 4469665 play this with hrhd
 ## Tutorial Video
 STILL WIP (Don't have time to make it right now)
 
