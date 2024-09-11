@@ -32,8 +32,8 @@ B. Installation
          Right click **[Main] # Switch** and Enabled
       5. You're good to go to the next step
    2. nodejs (Skip this part if you know how to install it)
-      1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer)
-      2. Install it (I recommended you to install LTS version)
+      1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer) (I recommended you to install LTS version)
+      2. Install it
       3. Check on terminal using this command:
          ```
          npm -v
