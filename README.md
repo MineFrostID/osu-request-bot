@@ -1,7 +1,6 @@
 # osu-Request-Bot
 (IF YOU ARE PLAYING ON LAZER, I'M SORRY. THIS BOT IS NOT WORKING ON LAZER FOR NOW)
 
-
 Join my Discord server if you want to ask about something : **[Join Here](https://discord.gg/RT5eC26qYa)** (Mostly Indonesian)
 
 ## Preparation
@@ -40,11 +39,13 @@ B. Installation
          ```
          If it's installed, it will give you the current version installed on your PC.
       4. You're good to go to the next step
-
+      5. 
 ## Installation
+
 ### Simple
 1. Download .exe file from [Release](https://github.com/MineFrostID/osu-request-bot/releases/)
 2. Open it
+
 ### Advance (If you want to edit the code)
 1. Download .zip file from [Release](https://github.com/MineFrostID/osu-request-bot/releases/)
 2. Extract the file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
@@ -53,8 +54,10 @@ B. Installation
    npm install
    ```
 4. You can start to customize the bot by yourself
+
 ### NOTE FOR YOUTUBE STREAMER
 Make a new stream schedule and GO LIVE (This bot will not working if you don't have any live stream)
+
 ## How to use (For Viewer)
 Use this format to request :
 > !r [beatmapID] [message / mods]
@@ -71,6 +74,7 @@ For Example
 - > !r 4469665
 - > !r 4469665 hddt
 - > !r 4469665 play this with hrhd
+  > 
 ## Tutorial Video
 STILL WIP (Don't have time to make it right now)
 
