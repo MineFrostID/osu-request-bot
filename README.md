@@ -29,7 +29,7 @@ B. Installation
       4. Check on this section:
          > Actions
 
-         Right click **[Main] # Switch** and Enabled
+         Right click ( **[Main] # Switch** ) and Enabled
       5. You're good to go to the next step
    2. nodejs (Skip this part if you know how to install it)
       1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer) (I recommended you to install LTS version)
