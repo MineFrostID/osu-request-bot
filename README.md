@@ -43,10 +43,10 @@ B. Installation
 
 ## Installation
 ### Simple
-1. Download .exe file from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
+1. Download .exe file from [Release](https://github.com/MineFrostID/osu-request-bot/releases/)
 2. Open it
 ### Advance (If you want to edit the code)
-1. Download .zip file from [Release](https://github.com/MineFrostID/osu-request-youtube-bot/releases/)
+1. Download .zip file from [Release](https://github.com/MineFrostID/osu-request-bot/releases/)
 2. Extract the file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
 3. Open terminal inside the folder and run this command:
    ```
