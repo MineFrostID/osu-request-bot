@@ -126,42 +126,8 @@ const login = async (data) => {
 };
 
 // Main function
-let main = async (req, req2) => {
-  const mods = [
-    "EZ",
-    "HD",
-    "HR",
-    "DT",
-    "NC",
-    "FL",
-    "EZDT",
-    "DTEZ",
-    "EZHD",
-    "HDEZ",
-    "EZNC",
-    "NCEZ",
-    "EZFL",
-    "FLEZ",
-    "HDHR",
-    "HRHD",
-    "HDDT",
-    "DTHD",
-    "HDNC",
-    "NCHD",
-    "HDFL",
-    "FLHD",
-    "HRDT",
-    "DTHR",
-    "HRNC",
-    "NCHR",
-    "HRFL",
-    "FLHR",
-    "DTFL",
-    "FLDT",
-    "NCFL",
-    "FLNC",
-  ];
-
+const main = async (req, req2) => {
+  if (!loginStatus) return false;
   // Get id and username from request
 
   // Variable for mods
@@ -256,7 +222,7 @@ let main = async (req, req2) => {
     let banchoMessage = new banchojs.OutgoingBanchoMessage(
       client,
       users,
-      `${username} => [${reqMods}] ${message}``${username} => [${reqMods}] ${message}`
+      `${username} => [${reqMods}] ${message}`
     );
     banchoMessage.send();
     console.info("=====================================");
@@ -320,7 +286,7 @@ router.get("/request/:id", async (req, res) => {
 });
 
 // Get request with username
-router.get("/request/:map/:name", async (req, res) => {
+router.get("/request/:id/:name", async (req, res) => {
   if (!loginStatus) {
     res.send("Please login first!");
     return;
