@@ -3,11 +3,14 @@
   "version": "1.2.0",
   "private": false,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon node ./bin/www"
   },
   "dependencies": {
     "bancho.js": "^0.11.6",
+    "console-stamp": "^3.1.2",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
+    "nodemon": "^3.1.5",
     "osu-api-extended": "^2.8.52"
   }
 }

@@ -1,40 +1,43 @@
+// INITIALIZATION
+// Require modules
 var express = require("express");
 var readline = require("readline");
 var router = express.Router();
+require("console-stamp")(console, { pattern: "dd/mm/yyyy HH:MM:ss" });
 const { v2, auth } = require("osu-api-extended");
 const banchojs = require("bancho.js");
-const config = require("../config/config.json");
+const dotenv = require("dotenv");
+dotenv.config();
 
-const CLIENT_ID = config.CLIENT_ID;
-const CLIENT_SECRET = config.CLIENT_PASSWORD;
-const REDIRECT_URI = config.REDIRECT_URL;
-const SCOPE_LIST = config.SCOPE_LIST;
-
+// Variables
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = process.env.REDIRECT_URI;
+const SCOPE_LIST = ["public"];
 let client, users, userInfo;
 let loginStatus = false;
 let TOKEN_V1 = null;
 
-// Welcome Message
-const welcomeMessage = () => {
-  console.log("=====================================");
-  console.log("WELCOME TO OSU! REQUEST YOUTUBE BOT!");
-  console.log("=====================================");
-  console.log("=====================================");
-  console.log("Please login to your osu! account");
-  console.log("Open this link to login:");
-  console.log("http://localhost:1054/login");
-  console.log("=====================================");
-};
-welcomeMessage();
+// CONFIGURATION
+// Keyboard input
 var rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
+// Welcome Message
+const welcomeMessage = () => {
+  console.info("WELCOME TO OSU! REQUEST YOUTUBE BOT!");
+  console.info("Please login to your osu! account");
+  console.info("Open this link to login:");
+  console.info("http://localhost:" + process.env.PORT + "/login");
+};
+welcomeMessage();
+
 // Get API V1 Token with keyboard input
 function getAPICode() {
-  console.log("=====================================");
-  console.log(
+  console.info("=====================================");
+  console.info(
     "Get your token at https://osu.ppy.sh/home/account/edit#legacy-api"
   );
   return new Promise((resolve) =>
@@ -47,9 +50,11 @@ const loginBanchoJs = async (username) => {
   if (loginStatus) return;
   var loginSuccess = false;
 
+  // Try to login 3 times
   for (let i = 0; i < 3 && !loginSuccess; i++) {
+    // Input API V1 Token
     TOKEN_V1 = await getAPICode();
-    console.log("=====================================");
+    // Try to login to BanchoJS
     try {
       client = new banchojs.BanchoClient({
         username: username,
@@ -59,30 +64,18 @@ const loginBanchoJs = async (username) => {
       users = client.getSelf();
       await client.connect();
 
-      console.log("=====================================");
-      console.log("BANCHOJS CONNECTED!");
-      console.log("=====================================");
+      console.info("=====================================");
+      console.info("BANCHOJS CONNECTED!");
+
+      // Close readline and set loginSuccess to true
       rl.close();
       loginSuccess = true;
     } catch (e) {
-      console.log("=====================================");
-      console.log("Failed to connect BanchoJS");
-      console.log("Please check your credential in users/account.json");
-      console.log("=====================================");
+      console.warn("Failed to connect BanchoJS");
+      console.warn("Please check your credential in users/account.json");
     }
   }
-
-  if (!loginSuccess) {
-    console.log("=====================================");
-    console.log("Failed to connect BanchoJS");
-    console.log("Please check your credential in users/account.json");
-    console.log("=====================================");
-    console.log("You have reached maximum login attempt");
-    console.log("Stopping the server...");
-    setTimeout(() => {
-      process.exit();
-    }, 5000);
-  }
+  return loginSuccess;
 };
 
 // Get URL for login
@@ -94,8 +87,9 @@ const url = async () => {
 // Login to osu-api-extended and BanchoJS
 const login = async (data) => {
   if (loginStatus) return;
-  const token = data.query.code;
+  const token = data;
 
+  // Authorize token
   userInfo = await auth.authorize(
     token,
     "osu",
@@ -104,18 +98,31 @@ const login = async (data) => {
     REDIRECT_URI
   );
 
+  if (userInfo.authentication === "basic") {
+    console.error("Failed to login to osu-api-extended");
+    console.error("Please check your environment variables");
+    console.error("Stopping the server...");
+    process.exit();
+  }
+
   // Login to osu-api-extended
   await auth.login(CLIENT_ID, CLIENT_SECRET, SCOPE_LIST);
 
-  // Login to BanchoJS
-  await loginBanchoJs(userInfo.username);
+  // Login BanchoJS
+  if (await loginBanchoJs(userInfo.username)) {
+    console.info("Logged in as " + userInfo.username);
+    console.info("SUCCESS!");
 
-  console.log("=====================================");
-  console.log("Logged in as " + userInfo.username);
-  console.log("SUCCESS!");
-  console.log("=====================================");
-
-  loginStatus = true;
+    loginStatus = true;
+  } else {
+    console.error("Failed to connect BanchoJS");
+    console.error("Please check your credential in users/account.json");
+    console.error("You have reached maximum login attempt");
+    console.error("Stopping the server...");
+    setTimeout(() => {
+      process.exit();
+    }, 5000);
+  }
 };
 
 // Main function
@@ -171,17 +178,17 @@ const main = async (req, req2) => {
   try {
     data = await v2.beatmap.id.details(beatmapId);
   } catch (e) {
-    console.log("=====================================");
-    console.log("ERROR: " + e);
-    console.log("=====================================");
+    console.error("=====================================");
+    console.error("ERROR: " + e);
+    console.error("=====================================");
     return false;
   }
 
   if (data.error) {
-    console.log("=====================================");
-    console.log("REQUEST BY USER: " + username);
-    console.log("ERROR: " + data.error);
-    console.log("=====================================");
+    console.info("=====================================");
+    console.info("REQUEST BY USER: " + username);
+    console.info("ERROR: " + data.error);
+    console.info("=====================================");
     return false;
   }
 
@@ -205,9 +212,10 @@ const main = async (req, req2) => {
   const mapUrl = `https://osu.ppy.sh/b/${data.id}`;
   const artist = data.beatmapset.artist;
   const title = data.beatmapset.title;
-  const respond = `${mapUrl} ${artist} - ${title}`;
+  const detail = `${artist} - ${title}`;
+  const respond = `${mapUrl} ${detail}`;
   const message = `[${respond}]`;
-  const respondMessage = `Request send: [${reqMods}] ${artist} - ${title} (${mapUrl})`;
+  const respondMessage = `Request send: [${reqMods}] ${detail} (${mapUrl})`;
 
   // Send message to osu!
   try {
@@ -217,21 +225,23 @@ const main = async (req, req2) => {
       `${username} => [${reqMods}] ${message}`
     );
     banchoMessage.send();
-    console.log("=====================================");
-    console.log("REQUEST BY USER: " + username);
-    console.log("Chat Sent to osu!: ");
-    console.log(`[${reqMods}] ${respond}`);
-    console.log("=====================================");
+    console.info("=====================================");
+    console.info("REQUEST BY USER: " + username);
+    console.info("Mods: " + reqMods);
+    console.info("Detail: " + detail);
+    console.info("Link: " + mapUrl);
+    console.info("=====================================");
     return respondMessage;
   } catch (e) {
-    console.log("=====================================");
-    console.log("Failed to send message");
-    console.log("ERROR: " + e);
-    console.log("=====================================");
+    console.info("=====================================");
+    console.info("Failed to send message");
+    console.info("ERROR: " + e);
+    console.info("=====================================");
     return false;
   }
 };
 
+// ROUTES
 // GET home page
 router.get("/", function (req, res) {
   if (loginStatus) {
@@ -243,6 +253,7 @@ router.get("/", function (req, res) {
   }
 });
 
+// Login
 router.get("/login", async (req, res) => {
   if (loginStatus) {
     res.send("You are already logged in!");
@@ -251,6 +262,7 @@ router.get("/login", async (req, res) => {
   res.redirect(await url());
 });
 
+// Callback
 router.get("/callback", async (req, res) => {
   if (loginStatus) {
     res.send("You are already logged in!");
@@ -259,7 +271,7 @@ router.get("/callback", async (req, res) => {
   res.send(
     "Logged in! You can close this tab now, continue to input your API V1 Token!"
   );
-  await login(req);
+  await login(req.query.code);
 });
 
 // Get request anonymously

@@ -1,6 +1,0 @@
-{
-  "CLIENT_ID": 30343,
-  "CLIENT_PASSWORD": "blbtdhnQUCuDckidUjUvM8a7ziMfhrb0XrcVRdhp",
-  "REDIRECT_URL": "http://localhost:1054/callback",
-  "SCOPE_LIST": ["public"]
-}
