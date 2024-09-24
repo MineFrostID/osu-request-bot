@@ -98,6 +98,7 @@ const login = async (data) => {
     REDIRECT_URI
   );
 
+  // Check if login failed
   if (userInfo.authentication === "basic") {
     console.error("Failed to login to osu-api-extended");
     console.error("Please check your environment variables");
@@ -208,17 +209,17 @@ const main = async (req, req2) => {
     reqMods = "NM";
   }
 
-  // Get beatmap details into variables
-  const mapUrl = `https://osu.ppy.sh/b/${data.id}`;
-  const artist = data.beatmapset.artist;
-  const title = data.beatmapset.title;
-  const detail = `${artist} - ${title}`;
-  const respond = `${mapUrl} ${detail}`;
-  const message = `[${respond}]`;
-  const respondMessage = `Request send: [${reqMods}] ${detail} (${mapUrl})`;
-
   // Send message to osu!
   try {
+    // Get beatmap details into variables
+    const mapUrl = `https://osu.ppy.sh/b/${data.id}`;
+    const artist = data.beatmapset.artist;
+    const title = data.beatmapset.title;
+    const detail = `${artist} - ${title}`;
+    const respond = `${mapUrl} ${detail}`;
+    const message = `[${respond}]`;
+    const respondMessage = `Request send: [${reqMods}] ${detail} (${mapUrl})`;
+
     let banchoMessage = new banchojs.OutgoingBanchoMessage(
       client,
       users,
@@ -226,10 +227,10 @@ const main = async (req, req2) => {
     );
     banchoMessage.send();
     console.info("=====================================");
-    console.info("REQUEST BY USER: " + username);
-    console.info("Mods: " + reqMods);
-    console.info("Detail: " + detail);
-    console.info("Link: " + mapUrl);
+    console.info("REQUEST BY : " + username);
+    console.info("MODS       : " + reqMods);
+    console.info("DETAIL     : " + detail);
+    console.info("LINK       : " + mapUrl);
     console.info("=====================================");
     return respondMessage;
   } catch (e) {
@@ -256,6 +257,9 @@ router.get("/", function (req, res) {
 // Login
 router.get("/login", async (req, res) => {
   if (loginStatus) {
+    console.info("=====================================");
+    console.log("You are already logged in!");
+    console.info("=====================================");
     res.send("You are already logged in!");
     return;
   }
@@ -265,6 +269,9 @@ router.get("/login", async (req, res) => {
 // Callback
 router.get("/callback", async (req, res) => {
   if (loginStatus) {
+    console.info("=====================================");
+    console.log("You are already login!");
+    console.info("=====================================");
     res.send("You are already logged in!");
     return;
   }
@@ -277,7 +284,10 @@ router.get("/callback", async (req, res) => {
 // Get request anonymously
 router.get("/request/:id", async (req, res) => {
   if (!loginStatus) {
-    res.send("Please login first!");
+    console.info("=====================================");
+    console.log("Please login first!");
+    console.info("=====================================");
+    res.send("Bot is not active");
     return;
   }
   const messageSend = await main(req.params.id, "Anonymous");
@@ -288,7 +298,10 @@ router.get("/request/:id", async (req, res) => {
 // Get request with username
 router.get("/request/:id/:name", async (req, res) => {
   if (!loginStatus) {
-    res.send("Please login first!");
+    console.info("=====================================");
+    console.log("Please login first!");
+    console.info("=====================================");
+    res.send("Bot is not active");
     return;
   }
   const messageSend = await main(req.params.id, req.params.name);
