@@ -258,7 +258,7 @@ router.get("/", function (req, res) {
 router.get("/login", async (req, res) => {
   if (loginStatus) {
     console.info("=====================================");
-    console.log("You are already logged in!");
+    console.info("You are already logged in!");
     console.info("=====================================");
     res.send("You are already logged in!");
     return;
@@ -270,7 +270,7 @@ router.get("/login", async (req, res) => {
 router.get("/callback", async (req, res) => {
   if (loginStatus) {
     console.info("=====================================");
-    console.log("You are already login!");
+    console.info("You are already login!");
     console.info("=====================================");
     res.send("You are already logged in!");
     return;
@@ -284,9 +284,9 @@ router.get("/callback", async (req, res) => {
 // Get request anonymously
 router.get("/request/:id", async (req, res) => {
   if (!loginStatus) {
-    console.info("=====================================");
-    console.log("Please login first!");
-    console.info("=====================================");
+    console.warn("=====================================");
+    console.warn("Please login first!");
+    console.warn("=====================================");
     res.send("Bot is not active");
     return;
   }
@@ -298,9 +298,9 @@ router.get("/request/:id", async (req, res) => {
 // Get request with username
 router.get("/request/:id/:name", async (req, res) => {
   if (!loginStatus) {
-    console.info("=====================================");
-    console.log("Please login first!");
-    console.info("=====================================");
+    console.warn("=====================================");
+    console.warn("Please login first!");
+    console.warn("=====================================");
     res.send("Bot is not active");
     return;
   }
