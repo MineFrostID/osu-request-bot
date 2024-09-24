@@ -30,7 +30,7 @@ B. Installation
 
          Right click ( **[Main] # Switch** ) and Enabled
       5. You're good to go to the next step
-   2. nodejs (Skip this part if you know how to install it)
+  2. nodejs (Skip this part if you know how to install it)
       1. Download nodejs [here](https://nodejs.org/en/download/prebuilt-installer) (I recommended you to install LTS version)
       2. Install it
       3. Check on terminal using this command:
@@ -39,7 +39,7 @@ B. Installation
          ```
          If it's installed, it will give you the current version installed on your PC.
       4. You're good to go to the next step
-      5. 
+         
 ## Installation
 
 ### Simple
@@ -49,11 +49,12 @@ B. Installation
 ### Advance (If you want to edit the code)
 1. Download .zip file from [Release](https://github.com/MineFrostID/osu-request-bot/releases/)
 2. Extract the file and open the folder (doesn't have to be on the same folder as streamer.bot, you can extract this anywhere you want)
-3. Open terminal inside the folder and run this command:
+3. Config your own .env file, get your OAuth client [here](https://osu.ppy.sh/home/account/edit#oauth) (Make a new one if you haven't)
+4. Open terminal inside the folder and run this command:
    ```
    npm install
    ```
-4. You can start to customize the bot by yourself
+5. You can start to customize the bot by yourself
 
 ### NOTE FOR YOUTUBE STREAMER
 Make a new stream schedule and GO LIVE (This bot will not working if you don't have any live stream)
