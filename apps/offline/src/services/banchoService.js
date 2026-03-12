@@ -24,60 +24,70 @@ function getAPICode() {
 }
 
 const connectBancho = async (username, token) => {
-  client = new banchojs.BanchoClient({
-    username: username,
-    password: token,
-  });
+  try {
+    client = new banchojs.BanchoClient({
+      username: username,
+      password: token,
+    });
 
-  client.on("disconnect", () => {
-    console.log("BANCHOJS DISCONNECTED!");
-    loginStatus = false;
-  });
+    client.on("disconnect", () => {
+      console.log("BANCHOJS DISCONNECTED!");
+      loginStatus = false;
+    });
 
-  await client.connect();
-  users = client.getSelf();
+    await client.connect();
+    users = client.getSelf();
 
-  console.log("bancho.js Connected!");
-  rl.close();
-  loginStatus = true;
+    console.log("bancho.js Connected!");
+    rl.close();
+    loginStatus = true;
 
-  const setting = settings.loadSettings();
-  setting.legacy_api_key = token;
-  settings.saveSettings(setting);
+    const setting = settings.loadSettings();
+    setting.legacy_api_key = token;
+    settings.saveSettings(setting);
 
-  return { client, users };
+    return { client, users };
+  } catch (error) {
+    console.error("Error connecting to BanchoJS:", error);
+    throw error;
+  }
 };
 
 const loginBanchoJs = async (username) => {
-  if (loginStatus && client) return { client, users };
+  try {
+    if (loginStatus && client) return { client, users };
 
-  let TOKEN_V1 = null;
-  let loginSuccess = false;
+    let TOKEN_V1 = null;
+    let loginSuccess = false;
 
-  for (let i = 0; i < 3 && !loginSuccess; i++) {
-    TOKEN_V1 = await getAPICode();
-    if (!TOKEN_V1) {
-      console.log("API V1 token cannot be empty. Please try again.");
-      i--;
-      continue;
+    for (let i = 0; i < 3 && !loginSuccess; i++) {
+      TOKEN_V1 = await getAPICode();
+      if (!TOKEN_V1) {
+        console.log("API V1 token cannot be empty. Please try again.");
+        i--;
+        continue;
+      }
+      try {
+        await connectBancho(username, TOKEN_V1);
+        loginSuccess = true;
+      } catch (e) {
+        console.log("Failed to connect BanchoJS. Error: ", e);
+        await new Promise((r) => setTimeout(r, 1000));
+      }
     }
-    try {
-      await connectBancho(username, TOKEN_V1);
-      loginSuccess = true;
-    } catch (e) {
-      console.log("Failed to connect BanchoJS. Error: ", e);
-      await new Promise((r) => setTimeout(r, 1000));
+
+    if (!loginSuccess) {
+      console.log(
+        "Failed to connect BanchoJS after 3 attempts. Stopping server...",
+      );
+      process.exit(1);
     }
-  }
 
-  if (!loginSuccess) {
-    console.log(
-      "Failed to connect BanchoJS after 3 attempts. Stopping server...",
-    );
-    process.exit(1);
+    return { client, users };
+  } catch (error) {
+    console.error("Error during BanchoJS login:", error);
+    throw error;
   }
-
-  return { client, users };
 };
 
 const isLoggedIn = () => Boolean(loginStatus && client);

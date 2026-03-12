@@ -14,46 +14,59 @@ const buildLoginUrl = () => {
 };
 
 const redirectUser = async (code) => {
-  if (!code) throw new Error("Missing authorization code");
+  try {
+    if (!code) throw new Error("Missing authorization code");
 
-  userInfo = await auth.authorize(
-    code,
-    "osu",
-    client_id,
-    client_secret,
-    redirect_uri,
-  );
-
-  if (userInfo?.authentication === "basic") {
-    throw new Error(
-      "Failed to authorize with osu! (check CLIENT_ID/SECRET/REDIRECT_URI)",
+    userInfo = await auth.authorize(
+      code,
+      "osu",
+      client_id,
+      client_secret,
+      redirect_uri,
     );
+
+    if (userInfo?.authentication === "basic") {
+      throw new Error(
+        "Failed to authorize with osu! (check CLIENT_ID/SECRET/REDIRECT_URI)",
+      );
+    }
+
+    await authorizeUser(userInfo.username);
+
+    return userInfo;
+  } catch (error) {
+    console.error(
+      "Error during user authorization with osu-api-extended:",
+      error,
+    );
+    throw error;
   }
-
-  await authorizeUser(userInfo.username);
-
-  return userInfo;
 };
 
 const authorizeUser = async (username) => {
-  const setting = settings.loadSettings();
+  try {
+    const setting = settings.loadSettings();
 
-  if (setting.oauth_code) {
-    await auth.login(
-      client_id,
-      client_secret,
-      scope_list,
-      setting.oauth_code.access_token,
-    );
-  } else {
-    const data = await auth.login(client_id, client_secret, scope_list);
+    if (setting.oauth_code) {
+      await auth.login(
+        client_id,
+        client_secret,
+        scope_list,
+        setting.oauth_code.access_token,
+      );
+    } else {
+      const data = await auth.login(client_id, client_secret, scope_list);
 
-    data.username = username;
-    setting.oauth_code = data;
-    settings.saveSettings(setting);
+      data.username = username;
+      setting.oauth_code = data;
+      settings.saveSettings(setting);
+    }
+
+    console.log("osu-api-extended Connected!");
+  } catch (error) {
+    console.error("Error during authorization with osu-api-extended:", error);
+    throw error;
   }
-
-  console.log("osu-api-extended Connected!");
 };
 
 const getUserInfo = () => userInfo;
