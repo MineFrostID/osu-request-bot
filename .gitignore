@@ -4,5 +4,6 @@ apps/offline/logs
 apps/offline/.env
 apps/offline/setting.json
 apps/offline/config.json
+apps/offline/dist
 apps/logs
 .vscode
