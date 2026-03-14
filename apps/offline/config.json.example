@@ -1,0 +1,8 @@
+{
+  "port": 3000,
+  "debug": true,
+  "clientId": "your_client_id_here",
+  "clientSecret": "your_client_secret_here",
+  "redirectUri": "http://localhost:3000/callback",
+  "scopeList": ["identify", "public"]
+}
