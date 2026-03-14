@@ -1,12 +1,11 @@
-// const { auth } = require("osu-api-extended");
-// const settings = require("../controllers/settings");
-import { auth } from "osu-api-extended";
-import { loadSettings, saveSettings } from "../controllers/settings.js";
-const env = process.env;
-const client_id = env.CLIENT_ID;
-const client_secret = env.CLIENT_SECRET;
-const redirect_uri = env.REDIRECT_URI;
-const scope_list = JSON.parse(env.SCOPE_LIST);
+const { auth } = require("osu-api-extended");
+const { loadSettings, saveSettings } = require("../controllers/settings");
+const config = require("../../config.json");
+
+const client_id = config.clientId;
+const client_secret = config.clientSecret;
+const redirect_uri = config.redirectUri;
+const scope_list = config.scopeList;
 
 let userInfo = null;
 
@@ -15,9 +14,13 @@ const buildLoginUrl = () => {
 };
 
 const redirectUser = async (code) => {
-  try {
-    if (!code) throw new Error("Missing authorization code");
+  if (!code) {
+    // Non-fatal: user belum memberikan code
+    console.log("Authorization code is missing. Please login first.");
+    return null;
+  }
 
+  try {
     userInfo = await auth.authorize(
       code,
       "osu",
@@ -27,20 +30,17 @@ const redirectUser = async (code) => {
     );
 
     if (userInfo?.authentication === "basic") {
-      throw new Error(
-        "Failed to authorize with osu! (check CLIENT_ID/SECRET/REDIRECT_URI)",
+      console.log(
+        "Failed to authorize. Please check your CLIENT_ID, CLIENT_SECRET, or REDIRECT_URI.",
       );
+      return null;
     }
 
     await authorizeUser(userInfo.username);
-
     return userInfo;
   } catch (error) {
-    console.error(
-      "Error during user authorization with osu-api-extended:",
-      error,
-    );
-    throw error;
+    handleError(error, "redirectUser");
+    return null;
   }
 };
 
@@ -57,19 +57,41 @@ const authorizeUser = async (username) => {
       );
     } else {
       const data = await auth.login(client_id, client_secret, scope_list);
-
       data.username = username;
       setting.oauth_code = data;
       saveSettings(setting);
     }
 
-    console.log("osu-api-extended Connected!");
+    console.log("osu-api-extended connected successfully!");
   } catch (error) {
-    console.error("Error during authorization with osu-api-extended:", error);
-    throw error;
+    handleError(error, "authorizeUser");
   }
 };
 
 const getUserInfo = () => userInfo;
 
-export { buildLoginUrl, redirectUser, authorizeUser, getUserInfo };
+/**
+ * Handle error secara ramah
+ * @param {Error} error
+ * @param {string} context
+ */
+const handleError = (error, context = "") => {
+  const fatalErrors = [
+    "ENOTFOUND",
+    "ECONNREFUSED",
+    "TypeError",
+    "ReferenceError",
+  ];
+
+  // Jika error termasuk fatal, tampilkan stack lengkap
+  if (
+    fatalErrors.some((f) => error.message.includes(f) || error.name.includes(f))
+  ) {
+    console.error(`Fatal error in ${context}:`, error);
+  } else {
+    // Non-fatal, tampilkan pesan sederhana
+    console.log(`Oops, something went wrong in ${context}. Please try again.`);
+  }
+};
+
+module.exports = { buildLoginUrl, redirectUser, authorizeUser, getUserInfo };

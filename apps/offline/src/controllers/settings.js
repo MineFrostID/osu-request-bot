@@ -1,7 +1,5 @@
-// const fs = require("fs");
-// const path = require("path");
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 const settingsPath = path.resolve(process.cwd(), "setting.json");
 
@@ -58,4 +56,26 @@ function webCheck() {
   return 2;
 }
 
-export { loadSettings, saveSettings, resetSettings, isLogin, webCheck };
+const openBrowser = async (port) => {
+  try {
+    const url = `http://localhost:${port}`;
+    if (process.platform === "win32") {
+      exec(`start ${url}`);
+    } else if (process.platform === "darwin") {
+      exec(`open ${url}`);
+    } else {
+      exec(`xdg-open ${url}`);
+    }
+  } catch (error) {
+    console.error("Error opening browser:", error);
+  }
+};
+
+module.exports = {
+  loadSettings,
+  saveSettings,
+  resetSettings,
+  isLogin,
+  webCheck,
+  openBrowser,
+};

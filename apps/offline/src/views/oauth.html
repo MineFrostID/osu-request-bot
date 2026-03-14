@@ -35,18 +35,7 @@
         Please login using your osu! account to continue.
       </p>
 
-      <button id="osuLogin">Login with osu!</button>
+      <a href="/login"><button id="osuLogin">Login with osu!</button></a>
     </div>
-
-    <script>
-      const osuLoginBtn = document.getElementById("osuLogin");
-      osuLoginBtn.addEventListener("click", () => {
-        // Redirect ke /login untuk memulai proses login
-        window.location.href = "/login";
-      });
-
-      const submitApiBtn = document.getElementById("submitApi");
-      submitApiBtn.addEventListener("click", () => {});
-    </script>
   </body>
 </html>

@@ -1,38 +1,29 @@
-// const express = require("express");
-// const open = require("open").default;
-// const osuAuthService = require("../services/osuAuthService");
-// const banchoService = require("../services/banchoService");
-// const request = require("../controllers/request");
-// const settings = require("../controllers/settings");
-// const welcome = require("../controllers/welcome");
-// const path = require("path");
-import express from "express";
-import { buildLoginUrl, redirectUser } from "../services/osuAuthService.js";
-import { isLoggedIn, loginBanchoJs } from "../services/banchoService.js";
-import { sendRequest } from "../controllers/request.js";
-import { webCheck, loadSettings } from "../controllers/settings.js";
-import path from "path";
-const port = process.env.PORT || 3000;
+const express = require("express");
+const { buildLoginUrl, redirectUser } = require("../services/osuAuthService");
+const { isLoggedIn, loginBanchoJs } = require("../services/banchoService");
+const { sendRequest } = require("../controllers/request");
+const {
+  webCheck,
+  loadSettings,
+  openBrowser,
+} = require("../controllers/settings");
+const port = require("../../config.json").port || 3000;
+const { loadTemplate } = require("../utils/templateHelper");
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  if (webCheck() === 0) {
-    res.sendFile(path.join(process.cwd(), "src", "views", "index.html"));
-  } else if (webCheck() === 1) {
-    res.sendFile(path.join(process.cwd(), "src", "views", "api.html"));
-  } else {
-    res.sendFile(path.join(process.cwd(), "src", "views", "oauth.html"));
-  }
-  // if (isLoggedIn()) {
-  //   res.send("Welcome to osu! Request Youtube Bot!");
-  // } else {
-  //   res.send("Welcome! Please login at /login");
-  // }
+  let template;
+  if (webCheck() === 0) template = loadTemplate("index.html");
+  else if (webCheck() === 1) template = loadTemplate("api.html");
+  else template = loadTemplate("oauth.html");
+
+  res.send(template);
 });
 
 router.get("/login", async (req, res) => {
   if (isLoggedIn()) {
-    res.send("Already logged in!");
+    openBrowser(port);
     return;
   }
   res.redirect(buildLoginUrl());
@@ -43,10 +34,8 @@ router.get("/callback", async (req, res) => {
     res.send("Already logged in!");
     return;
   }
-  const userInfo = await redirectUser(req.query.code);
-  // res.send(
-  //   `Logged in as ${userInfo.username}. Get your token at https://osu.ppy.sh/home/account/edit#legacy-api and continue to input your API V1 Token!`,
-  // );
+  const code = req.query.code;
+  await redirectUser(code);
   res.redirect("/");
 });
 
@@ -86,4 +75,4 @@ router.get("/request/:id/:name", async (req, res) => {
   else res.send(data);
 });
 
-export default router;
+module.exports = router;

@@ -1,24 +1,38 @@
+process.on("uncaughtException", (err) => {
+  console.error("UNCAUGHT EXCEPTION:");
+  console.error(err);
+
+  console.log("\nPress ANY key to exit...");
+  process.stdin.resume();
+  process.stdin.once("data", () => process.exit(1));
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("UNHANDLED PROMISE REJECTION:");
+  console.error(reason);
+
+  console.log("\nPress ANY key to exit...");
+  process.stdin.resume();
+  process.stdin.once("data", () => process.exit(1));
+});
+
 // const dotenv = require("dotenv").config({ quiet: true });
-// const app = require("../app");
-// const debug = require("debug")("npbot-new:server");
-// const http = require("http");
-// import dotenv from "dotenv";
-// dotenv.config({
-//   quiet: true,
-// });
-import "dotenv/config";
-import app from "../app.js";
-import debug from "debug";
-import http from "http";
+const app = require("../app");
+const debug = require("debug")("npbot-new:server");
+const http = require("http");
 
-import { welcomeMessage } from "../src/controllers/welcome.js";
+const config = require("../config.json");
 
-const port = normalizePort(process.env.PORT || "3000");
+const { welcomeMessage } = require("../src/controllers/welcome.js");
+
+const port = normalizePort(config.port || 3000);
 app.set("port", port);
 
 const server = http.createServer(app);
 
-server.listen(port);
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 server.on("error", onError);
 server.on("listening", onListening);
 
@@ -43,8 +57,7 @@ function onError(error) {
       console.error(bind + " is already in use");
       console.log("Press ANY key to exit...");
 
-      process.stdin.resume();
-      process.stdin.on("data", () => process.exit(1));
+      process.stdin.once("data", () => process.exit(1));
       return;
     default:
       throw error;
