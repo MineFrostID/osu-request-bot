@@ -1,11 +1,12 @@
-const { auth } = require("osu-api-extended");
+// const { auth } = require("osu-api-extended");
+// const settings = require("../controllers/settings");
+import { auth } from "osu-api-extended";
+import { loadSettings, saveSettings } from "../controllers/settings.js";
 const env = process.env;
 const client_id = env.CLIENT_ID;
 const client_secret = env.CLIENT_SECRET;
 const redirect_uri = env.REDIRECT_URI;
 const scope_list = JSON.parse(env.SCOPE_LIST);
-
-const settings = require("../controllers/settings");
 
 let userInfo = null;
 
@@ -45,7 +46,7 @@ const redirectUser = async (code) => {
 
 const authorizeUser = async (username) => {
   try {
-    const setting = settings.loadSettings();
+    const setting = loadSettings();
 
     if (setting.oauth_code) {
       await auth.login(
@@ -59,7 +60,7 @@ const authorizeUser = async (username) => {
 
       data.username = username;
       setting.oauth_code = data;
-      settings.saveSettings(setting);
+      saveSettings(setting);
     }
 
     console.log("osu-api-extended Connected!");
@@ -71,9 +72,4 @@ const authorizeUser = async (username) => {
 
 const getUserInfo = () => userInfo;
 
-module.exports = {
-  buildLoginUrl,
-  redirectUser,
-  authorizeUser,
-  getUserInfo,
-};
+export { buildLoginUrl, redirectUser, authorizeUser, getUserInfo };

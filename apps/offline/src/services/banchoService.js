@@ -1,6 +1,9 @@
-const banchojs = require("bancho.js");
-const readline = require("readline");
-const settings = require("../controllers/settings");
+// const banchojs = require("bancho.js");
+// const readline = require("readline");
+// const settings = require("../controllers/settings");
+import banchojs from "bancho.js";
+import readline from "readline";
+import { saveSettings, loadSettings } from "../controllers/settings.js";
 
 let client = null;
 let users = null;
@@ -42,9 +45,9 @@ const connectBancho = async (username, token) => {
     rl.close();
     loginStatus = true;
 
-    const setting = settings.loadSettings();
+    const setting = loadSettings();
     setting.legacy_api_key = token;
-    settings.saveSettings(setting);
+    saveSettings(setting);
 
     return { client, users };
   } catch (error) {
@@ -90,10 +93,4 @@ const isLoggedIn = () => Boolean(loginStatus && client);
 const getClient = () => client;
 const getUsers = () => users;
 
-module.exports = {
-  connectBancho,
-  loginBanchoJs,
-  isLoggedIn,
-  getClient,
-  getUsers,
-};
+export { connectBancho, loginBanchoJs, isLoggedIn, getClient, getUsers };

@@ -1,32 +1,37 @@
-const open = require("open").default;
-const path = require("path");
-const fs = require("fs");
-
-const osuAuthService = require("../services/osuAuthService");
-const banchoService = require("../services/banchoService");
-
-const { loadSettings, isLogin } = require("./settings");
+// const open = require("open").default;
+// const path = require("path");
+// const fs = require("fs");
+// const osuAuthService = require("../services/osuAuthService");
+// const banchoService = require("../services/banchoService");
+// const { loadSettings, isLogin } = require("./settings");
+import open from "open";
+import path from "path";
+import fs from "fs";
+import { authorizeUser } from "../services/osuAuthService.js";
+import { connectBancho } from "../services/banchoService.js";
+import { loadSettings, isLogin } from "./settings.js";
 
 const port = process.env.PORT || 3000;
 
 const welcomeMessage = async () => {
   try {
     console.info("WELCOME TO OSU! REQUEST YOUTUBE BOT!");
-    await open(`http://localhost:${port}`);
 
     if (settingCheck()) {
       try {
         if (isLogin()) {
           const setting = loadSettings();
 
-          await osuAuthService.authorizeUser(setting.oauth_code.username);
+          await authorizeUser(setting.oauth_code.username);
 
-          await banchoService.connectBancho(
+          await connectBancho(
             setting.oauth_code.username,
             setting.legacy_api_key,
           );
 
           console.info("YOU CAN NOW USE THE BOT.");
+          await open(`http://localhost:${port}`);
+
           return;
         }
       } catch (error) {
@@ -36,6 +41,7 @@ const welcomeMessage = async () => {
 
     console.info("Please login to your osu! account");
     console.info(`Open this link to login: http://localhost:${port}`);
+    await open(`http://localhost:${port}`);
   } catch (error) {
     console.error("Error during welcome message initialization:", error);
   }
@@ -59,4 +65,4 @@ const settingCheck = () => {
   return status;
 };
 
-module.exports = { welcomeMessage, settingCheck };
+export { welcomeMessage, settingCheck };

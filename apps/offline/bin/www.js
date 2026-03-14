@@ -1,7 +1,17 @@
-const dotenv = require("dotenv").config({ quiet: true });
-const app = require("../app");
-const debug = require("debug")("npbot-new:server");
-const http = require("http");
+// const dotenv = require("dotenv").config({ quiet: true });
+// const app = require("../app");
+// const debug = require("debug")("npbot-new:server");
+// const http = require("http");
+// import dotenv from "dotenv";
+// dotenv.config({
+//   quiet: true,
+// });
+import "dotenv/config";
+import app from "../app.js";
+import debug from "debug";
+import http from "http";
+
+import { welcomeMessage } from "../src/controllers/welcome.js";
 
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
@@ -47,6 +57,5 @@ function onListening() {
   // console.log(`Listening on ${bind}`);
   debug("Listening on " + bind);
 
-  const { welcomeMessage } = require("../src/controllers/welcome");
   welcomeMessage();
 }

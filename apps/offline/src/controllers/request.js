@@ -1,12 +1,17 @@
-const { v2 } = require("osu-api-extended");
-const banchojs = require("bancho.js");
-const {
-  getClient,
-  getUsers,
-  isLoggedIn,
-} = require("../services/banchoService");
-const path = require("path");
-const fs = require("fs");
+// const { v2 } = require("osu-api-extended");
+// const banchojs = require("bancho.js");
+// const {
+//   getClient,
+//   getUsers,
+//   isLoggedIn,
+// } = require("../services/banchoService");
+// const path = require("path");
+// const fs = require("fs");
+import { v2 } from "osu-api-extended";
+import banchojs from "bancho.js";
+import { getClient, getUsers, isLoggedIn } from "../services/banchoService.js";
+import path from "path";
+import fs from "fs";
 
 const MODS = new Set([
   "EZ",
@@ -152,6 +157,4 @@ const historyRequest = (username, detail, mapper, reqMods, mapUrl) => {
   fs.appendFileSync(filePath, logContent, "utf8");
 };
 
-module.exports = {
-  sendRequest,
-};
+export { sendRequest };
