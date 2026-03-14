@@ -53,34 +53,30 @@ const connectBancho = async (username, token) => {
   }
 };
 
-const loginBanchoJs = async (username) => {
+const loginBanchoJs = async (username, api) => {
   try {
     if (loginStatus && client) return { client, users };
 
     let TOKEN_V1 = null;
     let loginSuccess = false;
 
-    for (let i = 0; i < 3 && !loginSuccess; i++) {
-      TOKEN_V1 = await getAPICode();
-      if (!TOKEN_V1) {
-        console.log("API V1 token cannot be empty. Please try again.");
-        i--;
-        continue;
-      }
-      try {
-        await connectBancho(username, TOKEN_V1);
-        loginSuccess = true;
-      } catch (e) {
-        console.log("Failed to connect BanchoJS. Error: ", e);
-        await new Promise((r) => setTimeout(r, 1000));
-      }
+    TOKEN_V1 = api;
+    if (!TOKEN_V1) {
+      console.log("API V1 token cannot be empty. Please try again.");
+    }
+    try {
+      await connectBancho(username, TOKEN_V1);
+      loginSuccess = true;
+    } catch (e) {
+      console.log("Failed to connect BanchoJS. Error: ", e);
     }
 
     if (!loginSuccess) {
-      console.log(
-        "Failed to connect BanchoJS after 3 attempts. Stopping server...",
-      );
-      process.exit(1);
+      return false;
+      // console.log(
+      //   "Failed to connect BanchoJS after 3 attempts. Stopping server...",
+      // );
+      // process.exit(1);
     }
 
     return { client, users };

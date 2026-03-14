@@ -1,15 +1,27 @@
 const express = require("express");
+const open = require("open").default;
+const port = process.env.PORT || 3000;
 const router = express.Router();
 const osuAuthService = require("../services/osuAuthService");
 const banchoService = require("../services/banchoService");
 const request = require("../controllers/request");
+const settings = require("../controllers/settings");
+const welcome = require("../controllers/welcome");
+const path = require("path");
 
 router.get("/", (req, res) => {
-  if (banchoService.isLoggedIn()) {
-    res.send("Welcome to osu! Request Youtube Bot!");
+  if (settings.webCheck() === 0) {
+    res.sendFile(path.join(process.cwd(), "src", "views", "index.html"));
+  } else if (settings.webCheck() === 1) {
+    res.sendFile(path.join(process.cwd(), "src", "views", "api.html"));
   } else {
-    res.send("Welcome! Please login at /login");
+    res.sendFile(path.join(process.cwd(), "src", "views", "oauth.html"));
   }
+  // if (banchoService.isLoggedIn()) {
+  //   res.send("Welcome to osu! Request Youtube Bot!");
+  // } else {
+  //   res.send("Welcome! Please login at /login");
+  // }
 });
 
 router.get("/login", async (req, res) => {
@@ -26,10 +38,26 @@ router.get("/callback", async (req, res) => {
     return;
   }
   const userInfo = await osuAuthService.redirectUser(req.query.code);
-  res.send(
-    `Logged in as ${userInfo.username}. Get your token at https://osu.ppy.sh/home/account/edit#legacy-api and continue to input your API V1 Token!`,
-  );
-  await banchoService.loginBanchoJs(userInfo.username);
+  // res.send(
+  //   `Logged in as ${userInfo.username}. Get your token at https://osu.ppy.sh/home/account/edit#legacy-api and continue to input your API V1 Token!`,
+  // );
+  res.redirect("/");
+});
+
+router.post("/banchoJS", async (req, res) => {
+  const api = req.body.api;
+  const username = settings.loadSettings().oauth_code?.username || "";
+  await banchoService.loginBanchoJs(username, api);
+  res.redirect("/");
+});
+
+router.get("/loginInfo", (req, res) => {
+  const setting = settings.loadSettings();
+  res.json({
+    username: setting.oauth_code?.username || null,
+    hasLegacy: !!setting.legacy_api_key,
+    loggedIn: true,
+  });
 });
 
 router.get("/request/:id", async (req, res) => {

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>osu! Request Bot</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        margin-top: 80px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      input {
+        padding: 10px;
+        width: 260px;
+        font-size: 14px;
+      }
+
+      .description {
+        color: #555;
+        margin-bottom: 15px;
+      }
+
+      .link {
+        color: #0066cc;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Beatmap Request Module</h1>
+
+    <div id="apiPass">
+      <h2>Legacy API Password</h2>
+
+      <p class="description">
+        Enter your Legacy API password to allow beatmap requests.
+      </p>
+
+      <p class="description">
+        You can check your legacy api key
+        <a
+          href="https://osu.ppy.sh/home/account/edit#legacy-api"
+          target="_blank"
+        >
+          here </a
+        >.
+      </p>
+
+      <!-- FORM -->
+      <form action="/banchoJS" method="POST">
+        <input
+          type="password"
+          name="api"
+          placeholder="Enter Legacy API password"
+          required
+        />
+
+        <br /><br />
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>

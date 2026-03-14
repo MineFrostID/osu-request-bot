@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>osu! Request Bot</title>
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        margin-top: 80px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+      }
+
+      input {
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Beatmap Request Module</h1>
+
+    <div id="loginStep">
+      <h2>Login with osu!</h2>
+
+      <p class="description">
+        Please login using your osu! account to continue.
+      </p>
+
+      <button id="osuLogin">Login with osu!</button>
+    </div>
+
+    <script>
+      const osuLoginBtn = document.getElementById("osuLogin");
+      osuLoginBtn.addEventListener("click", () => {
+        // Redirect ke /login untuk memulai proses login
+        window.location.href = "/login";
+      });
+
+      const submitApiBtn = document.getElementById("submitApi");
+      submitApiBtn.addEventListener("click", () => {});
+    </script>
+  </body>
+</html>

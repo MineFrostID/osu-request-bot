@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>osu! Request Bot</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        text-align: center;
+        margin-top: 80px;
+      }
+
+      .status {
+        color: green;
+        font-weight: bold;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .description {
+        color: #555;
+        margin-bottom: 15px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Beatmap Request Module</h1>
+
+    <h2>Dashboard</h2>
+
+    <h1 class="description">Welcome, <span id="usernameLogin"></span></h1>
+
+    <p class="description">
+      You are successfully logged in and the request module is ready.
+    </p>
+
+    <p class="status">✔ Connected to osu! account</p>
+
+    <br />
+
+    <script>
+      fetch("/loginInfo")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Login info:", data);
+          const usernameSpan = document.getElementById("usernameLogin");
+
+          if (data.username) {
+            usernameSpan.textContent = data.username;
+          } else {
+            usernameSpan.textContent = "Guest";
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load login info:", err);
+          document.getElementById("usernameLogin").textContent = "Unknown";
+        });
+    </script>
+  </body>
+</html>
